@@ -16,25 +16,15 @@ const Icon = styled(PaperPlane)`
 `;
 
 class ConfirmCollectiveDeletion extends Component {
-  static async getInitialProps({ res, query = {}, router }) {
-    if (query.type) {
-      return { type: query.type };
-    }
-
-    if (res) {
-      res.statusCode = 302;
-      res.setHeader('Location', '/');
-      res.end();
-    } else {
-      router.push('/home');
-    }
-    return {};
+  static async getInitialProps({ query }) {
+    return { type: query.type, CollectiveId: Number(query.CollectiveId) };
   }
 
   constructor(props) {
     super(props);
-    if (props.type === 'USER') {
-      this.props.logout();
+
+    if (props.LoggedInUser && props.LoggedInUser.CollectiveId === props.CollectiveId) {
+      props.logout();
     }
   }
 
@@ -71,14 +61,14 @@ class ConfirmCollectiveDeletion extends Component {
                 collectiveType,
               }}
               id="confirmCollective.deletion.title"
-              defaultMessage="Your {collectiveType} has been deleted."
+              defaultMessage="{collectiveType} has been deleted."
             />
           </H3>
           {type === 'USER' ? (
             <P fontSize="16px" lineHeight="24px" color="black.900" mt={4}>
               <FormattedMessage
                 id="confirmCollective.user.deletion.description"
-                defaultMessage="We've deleted your user account, expenses, payment methods, and connected accounts."
+                defaultMessage="We've deleted the user account, expenses, payment methods, and connected accounts."
               />
             </P>
           ) : (
@@ -86,7 +76,7 @@ class ConfirmCollectiveDeletion extends Component {
               <FormattedMessage
                 id="confirmCollective.other.deletion.description"
                 values={{ collectiveType }}
-                defaultMessage="We've deleted your {collectiveType}, expenses, contributors, tiers, and all entities related to this {collectiveType}."
+                defaultMessage="We've deleted the {collectiveType}, expenses, contributors, tiers, and all entities related to this {collectiveType}."
               />
             </P>
           )}
@@ -98,7 +88,9 @@ class ConfirmCollectiveDeletion extends Component {
 
 ConfirmCollectiveDeletion.propTypes = {
   type: PropTypes.string.isRequired,
+  CollectiveId: PropTypes.number.isRequired,
   logout: PropTypes.func,
+  LoggedInUser: PropTypes.object,
 };
 
 export default withUser(ConfirmCollectiveDeletion);

@@ -115,6 +115,10 @@ exports.REWRITES = [
     destination: '/editCollective',
   },
   {
+    source: '/:slug/delete',
+    destination: '/collective-delete',
+  },
+  {
     source: '/:parentCollectiveSlug?/:collectiveType(events|projects)?/:collectiveSlug/contact',
     destination: '/collective-contact',
   },

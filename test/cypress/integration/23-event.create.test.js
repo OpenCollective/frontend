@@ -70,6 +70,6 @@ describe('event.create.test.js', () => {
     cy.location().should(location => {
       expect(location.search).to.eq('?type=EVENT');
     });
-    cy.contains('h1', 'Your event has been deleted.');
+    cy.contains('h1', 'event has been deleted.');
   });
 });

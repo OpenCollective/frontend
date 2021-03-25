@@ -16,9 +16,9 @@ describe('Account Deletion', () => {
     cy.get('[data-cy=delete]').click();
     cy.wait(1000);
     cy.location().should(location => {
-      expect(location.search).to.eq('?type=COLLECTIVE');
+      expect(location.search).to.contains('?type=COLLECTIVE');
     });
-    cy.contains('h1', 'Your collective has been deleted.');
+    cy.contains('h1', 'collective has been deleted.');
   });
 
   it('Should delete user', () => {
@@ -30,9 +30,9 @@ describe('Account Deletion', () => {
       cy.get('[data-cy=delete]').click();
       cy.wait(1000);
       cy.location().should(location => {
-        expect(location.search).to.eq('?type=USER');
+        expect(location.search).to.contains('?type=USER');
       });
-      cy.contains('h1', 'Your account has been deleted.');
+      cy.contains('h1', 'account has been deleted.');
     });
   });
 });

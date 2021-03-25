@@ -45,7 +45,7 @@ const DeleteCollective = ({ collective, ...props }) => {
         await deleteCollective({ variables: { id: collective.id } });
         await props.refetchLoggedInUser();
       }
-      await props.router.push(`/deleteCollective/confirmed?type=${collective.type}`);
+      await props.router.push(`/deleteCollective/confirmed?type=${collective.type}&CollectiveId=${collective.id}`);
     } catch (err) {
       const errorMsg = getErrorFromGraphqlException(err).message;
       setDeleteStatus({ deleting: false, error: errorMsg });
@@ -173,7 +173,14 @@ const DeleteCollective = ({ collective, ...props }) => {
 };
 
 DeleteCollective.propTypes = {
-  collective: PropTypes.object.isRequired,
+  collective: PropTypes.shape({
+    id: PropTypes.number,
+    slug: PropTypes.string,
+    name: PropTypes.string,
+    type: PropTypes.oneOf(Object.values(CollectiveType)),
+    isHost: PropTypes.bool,
+    isDeletable: PropTypes.bool,
+  }).isRequired,
   refetchLoggedInUser: PropTypes.func,
   router: PropTypes.object,
 };

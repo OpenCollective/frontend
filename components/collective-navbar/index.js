@@ -231,6 +231,7 @@ const getDefaultCallsToActions = (collective, sections, isAdmin, isHostAdmin, is
     addPrepaidBudget: isRoot && type === CollectiveType.ORGANIZATION,
     addFunds: isHostAdmin,
     hasSettings: isAdmin,
+    hasDelete: isRoot,
   };
 };
 
@@ -348,6 +349,20 @@ const getMainAction = (collective, callsToAction) => {
             <Envelope size="1em" />
             <Span ml={2}>
               <FormattedMessage id="Contact" defaultMessage="Contact" />
+            </Span>
+          </MainActionBtn>
+        </Link>
+      ),
+    };
+  } else if (callsToAction.includes('hasDelete')) {
+    return {
+      type: NAVBAR_ACTION_TYPE.DELETE,
+      component: (
+        <Link href={`/${collective.slug}/delete`}>
+          <MainActionBtn tabIndex="-1">
+            {/* TODO: find an icon */}
+            <Span ml={2}>
+              <FormattedMessage id="menu.deleteAccount" defaultMessage="Delete Account" />
             </Span>
           </MainActionBtn>
         </Link>

@@ -324,6 +324,16 @@ const CollectiveNavbarActionsMenu = ({ collective, callsToAction, hiddenActionFo
                         />
                       </MenuItem>
                     )}
+                    {callsToAction.hasDelete && (
+                      <MenuItem py={1} isHiddenOnMobile={hiddenActionForNonMobile === NAVBAR_ACTION_TYPE.DELETE}>
+                        <StyledLink as={Link} href={`/${collective.slug}/delete`}>
+                          <Container p={ITEM_PADDING}>
+                            {/* TODO: find an icon */}
+                            <FormattedMessage id="menu.deleteAccount" defaultMessage="Delete Account" />
+                          </Container>
+                        </StyledLink>
+                      </MenuItem>
+                    )}
                   </Box>
                 </DropdownContent>
               </div>
@@ -369,6 +379,8 @@ CollectiveNavbarActionsMenu.propTypes = {
     addPrepaidBudget: PropTypes.bool,
     /** Button to Edit the Collective */
     hasSettings: PropTypes.bool,
+    /** Button to Delete the Collective */
+    hasDelete: PropTypes.bool,
   }).isRequired,
   hiddenActionForNonMobile: PropTypes.oneOf(Object.values(NAVBAR_ACTION_TYPE)),
 };
