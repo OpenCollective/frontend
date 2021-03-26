@@ -36,6 +36,7 @@ const ToastProvider = ({ children }) => {
   const context = {
     toasts,
     addToast: useCallback(params => setToasts([...toasts, createToast(params)]), [toasts]),
+    addToasts: useCallback(toastsParams => setToasts([...toasts, ...toastsParams.map(createToast)]), [toasts]),
     removeToasts: useCallback(
       filterFunc => {
         const newToasts = toasts.filter(toast => !filterFunc(toast));

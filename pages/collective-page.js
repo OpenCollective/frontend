@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { graphql } from '@apollo/client/react/hoc';
-import { get } from 'lodash';
+import { get, uniq } from 'lodash';
 import dynamic from 'next/dynamic';
+import { injectIntl } from 'react-intl';
 import { createGlobalStyle } from 'styled-components';
 
-import { generateNotFoundError } from '../lib/errors';
+import { formatErrorMessage, generateNotFoundError, getErrorFromGraphQLError } from '../lib/errors';
 
 import CollectivePageContent from '../components/collective-page';
 import CollectiveNotificationBar from '../components/collective-page/CollectiveNotificationBar';
@@ -17,6 +18,7 @@ import ErrorPage from '../components/ErrorPage';
 import Loading from '../components/Loading';
 import OnboardingModal from '../components/onboarding-modal/OnboardingModal';
 import Page from '../components/Page';
+import { TOAST_TYPE, withToasts } from '../components/ToastProvider';
 import { withUser } from '../components/UserProvider';
 
 /** A page rendered when collective is pledged and not active yet */
@@ -58,14 +60,20 @@ class CollectivePage extends React.Component {
     }
 
     let skipDataFromTree = false;
+    let ssrGraphqlError;
 
     // If on server side
     if (req) {
-      await preloadCollectivePageGraphlQueries(slug, client);
-      skipDataFromTree = true;
+      try {
+        await preloadCollectivePageGraphlQueries(slug, client);
+        skipDataFromTree = true;
+      } catch (e) {
+        console.error(`Collective page: unable to preload data for ${slug}`, e);
+        ssrGraphqlError = e;
+      }
     }
 
-    return { slug, status, step, mode, skipDataFromTree };
+    return { slug, status, step, mode, skipDataFromTree, ssrGraphqlError };
   }
 
   static propTypes = {
@@ -81,6 +89,10 @@ class CollectivePage extends React.Component {
     step: PropTypes.string,
     mode: PropTypes.string,
     LoggedInUser: PropTypes.object, // from withUser
+    ssrGraphqlError: PropTypes.object, // from SSR
+    intl: PropTypes.object, // from injectIntl
+    addToast: PropTypes.func, // from withUser
+    addToasts: PropTypes.func, // from withUser
     data: PropTypes.shape({
       loading: PropTypes.bool,
       error: PropTypes.any,
@@ -123,6 +135,35 @@ class CollectivePage extends React.Component {
 
   componentDidMount() {
     this.setState({ smooth: true });
+    const graphqlError = get(this.props, 'data.error') || this.props.ssrGraphqlError;
+    if (graphqlError) {
+      this.reportGraphqlErrors(graphqlError);
+    }
+  }
+
+  componentDidUpdate(oldProps) {
+    const oldError = get(oldProps, 'data.error') || oldProps.ssrGraphqlError;
+    const newError = get(this.props, 'data.error') || this.props.ssrGraphqlError;
+    if (newError && newError !== oldError) {
+      this.reportGraphqlErrors(newError);
+    }
+  }
+
+  reportGraphqlErrors(errors) {
+    const { intl, data } = this.props.intl;
+
+    // If there's no collective, it's either a 404 or a Network error. We have to display a full page error
+    if (!data?.Collective) {
+      return;
+    }
+
+    if (errors.graphQLErrors?.length) {
+      const translateError = error => formatErrorMessage(intl, getErrorFromGraphQLError(error));
+      const i18nErrorsMsgs = errors.graphQLErrors.map(translateError);
+      this.props.addToasts(uniq(i18nErrorsMsgs).map(errorMsg => ({ type: TOAST_TYPE.ERROR, message: errorMsg })));
+    } else if (errors.message) {
+      this.props.addToast({ type: TOAST_TYPE.ERROR, message: errors.message });
+    }
   }
 
   getPageMetaData(collective) {
@@ -163,7 +204,7 @@ class CollectivePage extends React.Component {
     const loading = data.loading && !data.Collective;
 
     if (!loading) {
-      if (!data || data.error) {
+      if (!data || (!data.Collective && data.error)) {
         return <ErrorPage data={data} />;
       } else if (!data.Collective) {
         return <ErrorPage error={generateNotFoundError(slug)} log={false} />;
@@ -241,7 +282,8 @@ class CollectivePage extends React.Component {
 const addCollectivePageData = graphql(collectivePageQuery, {
   options: props => ({
     variables: getCollectivePageQueryVariables(props.slug),
+    errorPolicy: 'all',
   }),
 });
 
-export default withUser(addCollectivePageData(CollectivePage));
+export default injectIntl(withToasts(withUser(addCollectivePageData(CollectivePage))));
