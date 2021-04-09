@@ -3,6 +3,10 @@ const contributionFlowSteps = '/details|profile|payment|summary|success';
 
 exports.REWRITES = [
   {
+    source: '/:slug/admin/:section?',
+    destination: '/admin-panel',
+  },
+  {
     source: '/:pageSlug(become-a-host|become-a-fiscal-host)',
     destination: '/become-a-host',
   },

@@ -801,11 +801,11 @@ class EditCollectiveForm extends React.Component {
     });
 
     const fields = (this.fields[section] || []).filter(field => !field.when || field.when());
-
     return (
       <div className="EditCollectiveForm">
         <Flex flexWrap="wrap">
           <Menu collective={collective} selectedSection={this.getMenuSelectedSection(section)} />
+
           <Flex flexDirection="column" css={{ flexGrow: 10, flexBasis: 600 }}>
             {section === EDIT_COLLECTIVE_SECTIONS.FISCAL_HOSTING && (
               <SettingsTitle>

@@ -156,8 +156,8 @@ const OrdersWithData = ({ accountSlug, title, status, showPlatformTip }) => {
 
   return (
     <Box maxWidth={1000} width="100%" m="0 auto" px={2}>
-      <Flex>
-        <H1 fontSize="32px" lineHeight="40px" mb={24} py={2} fontWeight="normal">
+      <Flex mb={24} alignItems="center" flexWrap="wrap">
+        <H1 fontSize="32px" lineHeight="40px" py={2} fontWeight="normal">
           {title || <FormattedMessage id="FinancialContributions" defaultMessage="Financial Contributions" />}
         </H1>
         <Box mx="auto" />
