@@ -12,6 +12,7 @@ import { formatCurrency } from '../../lib/currency-utils';
 import { getIntervalFromContributionFrequency } from '../../lib/date-utils';
 import { getErrorFromGraphqlException } from '../../lib/errors';
 import { API_V2_CONTEXT, gqlV2 } from '../../lib/graphql/helpers';
+import { DEFAULT_MINIMUM_AMOUNT, DEFAULT_PRESETS } from '../../lib/tier-utils';
 
 import FormattedMoneyAmount from '../FormattedMoneyAmount';
 import { Box, Flex } from '../Grid';
@@ -97,11 +98,6 @@ const tiersQuery = gqlV2/* GraphQL */ `
 // TODO: internationalize me
 const OTHER_LABEL = 'Other';
 
-// The generic minimum amount
-const MINIMUM_AMOUNT_IN_CENTS = 100;
-
-const DEFAULT_PRESETS = [500, 1000, 2000, 5000];
-
 const useUpdateOrder = ({ contribution, onSuccess }) => {
   const { addToast } = useToasts();
   const [submitUpdateOrder, { loading }] = useMutation(updateOrderMutation, { context: API_V2_CONTEXT });
@@ -147,6 +143,7 @@ const getTierAmountOptions = (selectedTier, contribution) => {
   if (selectedTier && !selectedTier?.flexible) {
     return [buildOptionFromAmount(selectedTier.amount)];
   } else {
+    // TODO: use getTierPresets from tier-utils
     const presets = selectedTier?.presets || DEFAULT_PRESETS;
     const otherValue = null; // The way it's currently implemented, it doesn't need a value
     return [...presets.map(buildOptionFromAmount), { label: OTHER_LABEL, value: otherValue }];
@@ -166,19 +163,19 @@ const getContributeOptions = (intl, contribution, tiers, disableCustomContributi
       interval: tier.interval,
       presets: tier.presets,
       minimumAmount:
-        tier.amountType === AmountTypes.FLEXIBLE ? tier.minimumAmount.valueInCents : MINIMUM_AMOUNT_IN_CENTS,
+        tier.amountType === AmountTypes.FLEXIBLE ? tier.minimumAmount.valueInCents : DEFAULT_MINIMUM_AMOUNT,
     }));
   if (!disableCustomContributions) {
     tierOptions.unshift({
       key: `${contribution.id}-custom-tier`,
       title: intl.formatMessage(messages.customTier),
       flexible: true,
-      amount: MINIMUM_AMOUNT_IN_CENTS,
+      amount: DEFAULT_MINIMUM_AMOUNT,
       id: null,
       currency: contribution.amount.currency,
       interval: contribution.frequency.toLowerCase().slice(0, -2),
       presets: DEFAULT_PRESETS,
-      minimumAmount: MINIMUM_AMOUNT_IN_CENTS,
+      minimumAmount: DEFAULT_MINIMUM_AMOUNT,
       isCustom: true,
     });
   }
@@ -371,7 +368,7 @@ const UpdateOrderPopUp = ({ contribution, onCloseEdit }) => {
                               currency={currency}
                               value={inputAmountValue}
                               onChange={setInputAmountValue}
-                              min={MINIMUM_AMOUNT_IN_CENTS}
+                              min={DEFAULT_MINIMUM_AMOUNT}
                               precision={2}
                               px="2px"
                             />
