@@ -72,7 +72,6 @@ class UserProvider extends React.Component {
 
   logout = async () => {
     removeFromLocalStorage(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-    removeFromLocalStorage(LOCAL_STORAGE_KEYS.LOGGED_IN_USER);
     this.props.client.resetStore();
     this.setState({ LoggedInUser: null, errorLoggedInUser: null });
   };
@@ -124,7 +123,7 @@ class UserProvider extends React.Component {
   refetchLoggedInUser = async () => {
     const { getLoggedInUser } = this.props;
     try {
-      const LoggedInUser = await getLoggedInUser({ ignoreLocalStorage: true });
+      const LoggedInUser = await getLoggedInUser();
       this.setState({
         errorLoggedInUser: null,
         loadingLoggedInUser: false,
