@@ -6,8 +6,6 @@ import { get } from 'lodash';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { CollectiveType } from '../lib/constants/collectives';
-import { OC_FEE_PERCENT } from '../lib/constants/transactions';
 import { formatCurrency, getCurrencySymbol } from '../lib/currency-utils';
 
 import { AddFundsSourcePickerForUserWithData } from './AddFundsSourcePicker';
@@ -17,8 +15,8 @@ import InputField from './InputField';
 import StyledButton from './StyledButton';
 import { H2, Strong } from './Text';
 
-const addFundsHostQuery = gql`
-  query AddFundsHost($CollectiveId: Int) {
+const addPrepaidBudgetHostFeePercentQuery = gql`
+  query AddPrepaidBudgetHostFeePercent($CollectiveId: Int) {
     Collective(id: $CollectiveId) {
       id
       hostFeePercent
@@ -40,7 +38,7 @@ const TableContainer = styled.table`
   }
 `;
 
-class AddFundsForm extends React.Component {
+class AddPrepaidBudgetForm extends React.Component {
   static propTypes = {
     collective: PropTypes.object.isRequired,
     host: PropTypes.object,
@@ -92,10 +90,6 @@ class AddFundsForm extends React.Component {
         id: 'HostFee',
         defaultMessage: 'Host fee',
       },
-      'platformFeePercent.label': {
-        id: 'PlatformFee',
-        defaultMessage: 'Platform fee',
-      },
       'name.label': { id: 'Fields.name', defaultMessage: 'Name' },
       'email.label': { id: 'Email', defaultMessage: 'Email' },
       'organization.label': {
@@ -143,7 +137,7 @@ class AddFundsForm extends React.Component {
   retrieveHostFeePercent = async CollectiveId => {
     try {
       const result = await this.props.client.query({
-        query: addFundsHostQuery,
+        query: addPrepaidBudgetHostFeePercentQuery,
         variables: { CollectiveId },
       });
       const { hostFeePercent } = result.data.Collective;
@@ -187,40 +181,21 @@ class AddFundsForm extends React.Component {
     return false;
   }
 
-  getPlatformFee() {
-    if (this.state.form.platformFeePercent !== undefined) {
-      return this.state.form.platformFeePercent;
-    } else if (this.props.collective.type === CollectiveType.ORGANIZATION) {
-      return OC_FEE_PERCENT;
-    } else {
-      return 0;
-    }
-  }
-
   render() {
     const { loading } = this.props;
     const hostFeePercent = this.state.form.hostFeePercent || 0;
-    const platformFeePercent = this.getPlatformFee();
 
     const hostFeeAmount = formatCurrency(
       Math.round((hostFeePercent / 100) * this.state.form.totalAmount),
       this.props.collective.currency,
       { precision: 2 },
     );
-    const platformFeeAmount = formatCurrency(
-      Math.round((platformFeePercent / 100) * this.state.form.totalAmount),
-      this.props.collective.currency,
-      { precision: 2 },
-    );
-    const netAmount = formatCurrency(
-      Math.round(this.state.form.totalAmount * (1 - (hostFeePercent + platformFeePercent) / 100)),
-      this.props.collective.currency,
-      { precision: 2 },
-    );
 
-    /* We don't need to show these details if there are no amounts
-       present yet */
-    const showAddFundsToOrgDetails = this.state.form.totalAmount > 0 && (hostFeePercent > 0 || platformFeePercent > 0);
+    const netAmount = formatCurrency(
+      Math.round(this.state.form.totalAmount * (1 - hostFeePercent / 100)),
+      this.props.collective.currency,
+      { precision: 2 },
+    );
 
     // recompute this value based on new props
     this.totalAmountField.pre = getCurrencySymbol(this.props.collective.currency);
@@ -280,19 +255,6 @@ class AddFundsForm extends React.Component {
                     <td className="amount">{hostFeeAmount}</td>
                   </tr>
                   <tr>
-                    <td>
-                      <FormattedMessage
-                        id="addfunds.platformFees"
-                        defaultMessage="Platform fees ({platformFees})"
-                        values={{
-                          platformFees: `${platformFeePercent}%`,
-                        }}
-                      />
-                    </td>
-                    <td className="amount">{platformFeeAmount}</td>
-                  </tr>
-
-                  <tr>
                     <td colSpan={2}>
                       <hr size={1} />
                     </td>
@@ -305,40 +267,6 @@ class AddFundsForm extends React.Component {
                   </tr>
                 </tbody>
               </TableContainer>
-
-              <div>
-                {showAddFundsToOrgDetails && (
-                  <Container padding="8px 0">
-                    <FormattedMessage
-                      id="AddFundsForm.PutAside"
-                      defaultMessage="Please put aside {hostFeePercent}% ({hostFeeAmount}) for your host fee and {platformFeePercent}% ({platformFeeAmount}) for platform fees."
-                      values={{ hostFeePercent, hostFeeAmount, platformFeePercent, platformFeeAmount }}
-                    />
-                  </Container>
-                )}
-              </div>
-
-              <Container fontSize="1.2rem">
-                {this.props.host && (
-                  <FormattedMessage
-                    id="addfunds.disclaimer"
-                    defaultMessage="You will set aside {amount} in your bank account for this purpose."
-                    values={{
-                      amount: formatCurrency(this.state.form.totalAmount, this.props.collective.currency),
-                    }}
-                  />
-                )}
-
-                {!this.props.host && (
-                  <FormattedMessage
-                    id="addfunds.disclaimerOrganization"
-                    defaultMessage="You agree to set aside {amount} for this Organization's contributions."
-                    values={{
-                      amount: formatCurrency(this.state.form.totalAmount, this.props.collective.currency),
-                    }}
-                  />
-                )}
-              </Container>
             </Box>
           </Flex>
           <Flex flexWrap="wrap" pl={3} pr={3}>
@@ -367,4 +295,4 @@ class AddFundsForm extends React.Component {
   }
 }
 
-export default injectIntl(withApollo(AddFundsForm));
+export default injectIntl(withApollo(AddPrepaidBudgetForm));

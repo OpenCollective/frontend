@@ -5,7 +5,7 @@ import { Mutation } from '@apollo/client/react/components';
 import { pick } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 
-import AddPrepaidBudget from './AddPrepaidBudget';
+import AddPrepaidBudgetForm from './AddPrepaidBudgetForm';
 import { Box, Flex } from './Grid';
 import StyledButton from './StyledButton';
 import StyledModal, { ModalBody } from './StyledModal';
@@ -57,8 +57,8 @@ const AddPrepaidBudgetModal = ({ LoggedInUser, show, setShow, collective, host }
             )}
             {!prepaidBudgetAdded && (
               <Mutation mutation={addPrepaidBudgetMutation}>
-                {addFunds => (
-                  <AddPrepaidBudget
+                {addPrepaidBudget => (
+                  <AddPrepaidBudgetForm
                     LoggedInUser={LoggedInUser}
                     collective={collective}
                     host={host}
@@ -78,7 +78,7 @@ const AddPrepaidBudgetModal = ({ LoggedInUser, show, setShow, collective, host }
 
                       setLoading(true);
                       try {
-                        await addFunds({
+                        await addPrepaidBudget({
                           variables: {
                             ...pick(form, ['totalAmount', 'description']),
                             CollectiveId: collective.legacyId || collective.id,
