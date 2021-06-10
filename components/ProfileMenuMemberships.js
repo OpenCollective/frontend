@@ -224,11 +224,10 @@ const ProfileMenuMemberships = ({ user }) => {
       )}
       <Flex alignItems="center" mt={3}>
         <P
-          color="#4E5052"
-          fontFamily="montserratlight, arial"
-          fontSize="1rem"
-          fontWeight="600"
-          letterSpacing="1px"
+          color="black.700"
+          fontSize="12px"
+          fontWeight="500"
+          letterSpacing="0.06em"
           pr={2}
           textTransform="uppercase"
           whiteSpace="nowrap"
