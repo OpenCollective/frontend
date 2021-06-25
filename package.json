@@ -69,7 +69,7 @@
     "lodash": "4.17.21",
     "memoize-one": "5.2.1",
     "moment": "2.29.1",
-    "next": "10.1.3",
+    "next": "11.0.0",
     "node-fetch": "2.6.1",
     "nprogress": "0.2.0",
     "payment": "2.4.3",
@@ -181,6 +181,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "enzyme": "^3.11.0",
     "eslint": "^7.26.0",
+    "eslint-config-next": "^11.0.0",
     "eslint-config-opencollective": "^3.0.0",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-cypress": "^2.11.3",
@@ -264,6 +265,7 @@
   "depcheck": {
     "ignores": [
       "@formatjs/intl-relativetimeformat",
+      "eslint-config-next",
       "imagemin",
       "imagemin-optipng",
       "imagemin-pngquant",
