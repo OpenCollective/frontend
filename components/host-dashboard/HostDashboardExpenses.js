@@ -44,8 +44,8 @@ const hostDashboardExpensesQuery = gqlV2/* GraphQL */ `
     $minAmount: Int
     $maxAmount: Int
     $payoutMethodType: PayoutMethodType
-    $dateFrom: ISODateTime
-    $dateTo: ISODateTime
+    $dateFrom: DateTime
+    $dateTo: DateTime
     $searchTerm: String
   ) {
     host(slug: $hostSlug) {

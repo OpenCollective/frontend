@@ -321,8 +321,8 @@ const expensesPageQuery = gqlV2/* GraphQL */ `
     $minAmount: Int
     $maxAmount: Int
     $payoutMethodType: PayoutMethodType
-    $dateFrom: ISODateTime
-    $dateTo: ISODateTime
+    $dateFrom: DateTime
+    $dateTo: DateTime
     $searchTerm: String
   ) {
     account(slug: $collectiveSlug) {

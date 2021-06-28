@@ -33,8 +33,8 @@ const accountOrdersQuery = gqlV2/* GraphQL */ `
     $status: OrderStatus
     $minAmount: Int
     $maxAmount: Int
-    $dateFrom: ISODateTime
-    $dateTo: ISODateTime
+    $dateFrom: DateTime
+    $dateTo: DateTime
     $searchTerm: String
   ) {
     account(slug: $accountSlug) {

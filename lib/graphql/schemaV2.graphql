@@ -236,12 +236,12 @@ interface Account {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 }
@@ -781,12 +781,12 @@ type Bot implements Account {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 }
@@ -1038,12 +1038,12 @@ type Collective implements Account & AccountWithHost & AccountWithContributions 
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 
@@ -1381,7 +1381,7 @@ type Contributor {
   """
   Member join date
   """
-  since: ISODateTime!
+  since: DateTime!
 
   """
   How much money the user has contributed for this (in cents, using collective currency)
@@ -3251,12 +3251,12 @@ type Event implements Account & AccountWithHost & AccountWithContributions {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 
@@ -4199,12 +4199,12 @@ type Fund implements Account & AccountWithHost & AccountWithContributions {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 
@@ -4533,12 +4533,12 @@ type Host implements Account & AccountWithContributions {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 
@@ -5094,12 +5094,12 @@ type Individual implements Account {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
   firstName: String @deprecated(reason: "2020-10-12: Use the name field")
@@ -5121,11 +5121,6 @@ input IndividualCreateInput {
 }
 
 scalar IsoDateString
-
-"""
-ISO-8601 date
-"""
-scalar ISODateTime
 
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
@@ -6513,12 +6508,12 @@ type Organization implements Account & AccountWithContributions {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 
@@ -6607,8 +6602,8 @@ type PaymentMethod {
   sourcePaymentMethod: PaymentMethod
   data: JSON
   limitedToHosts: [Host]
-  expiryDate: ISODateTime
-  createdAt: ISODateTime
+  expiryDate: DateTime
+  createdAt: DateTime
 }
 
 """
@@ -7045,12 +7040,12 @@ type Project implements Account & AccountWithHost & AccountWithContributions {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 
@@ -7294,12 +7289,12 @@ type Query {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime
+    dateFrom: DateTime
 
     """
     Only return expenses that were created after this date
     """
-    dateTo: ISODateTime
+    dateTo: DateTime
 
     """
     The term to search
@@ -7393,12 +7388,12 @@ type Query {
     """
     Only return orders that were created after this date
     """
-    dateFrom: ISODateTime
+    dateFrom: DateTime
 
     """
     Only return orders that were created after this date
     """
-    dateTo: ISODateTime
+    dateTo: DateTime
 
     """
     The term to search
@@ -7470,12 +7465,12 @@ type Query {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime
+    dateFrom: DateTime
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime
+    dateTo: DateTime
 
     """
     The term to search
@@ -7598,7 +7593,7 @@ type Tier {
   customFields: JSON
   amountType: TierAmountType!
   minimumAmount: Amount!
-  endsAt: ISODateTime
+  endsAt: DateTime
 }
 
 enum TierAmountType {
@@ -7933,7 +7928,7 @@ input UpdateUpdateInput {
   slug: String
   title: String
   isPrivate: Boolean
-  makePublicOn: ISODateTime
+  makePublicOn: DateTime
   html: String
   fromAccount: AccountReferenceInput
 }
@@ -8166,12 +8161,12 @@ type Vendor implements Account & AccountWithHost & AccountWithContributions {
     """
     Only return expenses that were created after this date
     """
-    dateFrom: ISODateTime = null
+    dateFrom: DateTime = null
 
     """
     Only return expenses that were created before this date
     """
-    dateTo: ISODateTime = null
+    dateTo: DateTime = null
   ): VirtualCardCollection!
   virtualCardMerchants(limit: Int = 100, offset: Int = 0): AccountCollection!
 

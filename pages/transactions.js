@@ -47,8 +47,8 @@ const transactionsPageQuery = gqlV2/* GraphQL */ `
     $type: TransactionType
     $minAmount: Int
     $maxAmount: Int
-    $dateFrom: ISODateTime
-    $dateTo: ISODateTime
+    $dateFrom: DateTime
+    $dateTo: DateTime
     $searchTerm: String
     $kinds: [TransactionKind]
   ) {

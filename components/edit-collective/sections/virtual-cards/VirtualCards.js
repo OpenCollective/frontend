@@ -26,8 +26,8 @@ const virtualCardsQuery = gqlV2/* GraphQL */ `
     $offset: Int!
     $state: String
     $merchantAccount: AccountReferenceInput
-    $dateFrom: ISODateTime
-    $dateTo: ISODateTime
+    $dateFrom: DateTime
+    $dateTo: DateTime
   ) {
     collective(slug: $slug) {
       id
