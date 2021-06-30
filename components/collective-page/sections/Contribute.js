@@ -30,6 +30,7 @@ import ContainerSectionContent from '../ContainerSectionContent';
 import ContributeCardsContainer from '../ContributeCardsContainer';
 import { editAccountSettingMutation } from '../graphql/mutations';
 import { collectivePageQuery, getCollectivePageQueryVariables } from '../graphql/queries';
+import SectionTitle from '../SectionTitle';
 
 // Dynamic imports
 const AdminContributeCardsContainer = dynamic(() => import('../../contribute-cards/AdminContributeCardsContainer'), {
@@ -261,41 +262,51 @@ class SectionContribute extends React.PureComponent {
           <Fragment>
             {/* Financial contributions tiers */}
             {hasContribute && (
-              <Box pb={4} data-cy="financial-contributions">
-                <HorizontalScroller
-                  getScrollDistance={this.getContributeCardsScrollDistance}
-                  container={ContributeCardsContainer}
-                  containerProps={{ disableScrollSnapping: Boolean(draggingContributionsOrder) }}
-                >
-                  <React.Fragment>
-                    {isSaving && (
-                      <ContainerOverlay position="fixed" top={0} alignItems="center">
-                        <StyledSpinner size={64} />
-                        <P mt={3} fontSize="15px">
-                          <FormattedMessage id="Saving" defaultMessage="Saving..." />
-                        </P>
-                      </ContainerOverlay>
-                    )}
-                    {!(isAdmin && showTiersAdmin) &&
-                      waysToContribute.map(({ key, Component, componentProps }) => (
-                        <ContributeCardContainer key={key}>
-                          <Component {...componentProps} />
-                        </ContributeCardContainer>
-                      ))}
-                    {isAdmin && (
-                      <Container display={showTiersAdmin ? 'block' : 'none'} data-cy="admin-contribute-cards">
-                        <AdminContributeCardsContainer
-                          collective={collective}
-                          cards={waysToContribute}
-                          onContributionCardMove={this.onContributionCardMove}
-                          onContributionCardDrop={this.onContributionCardDrop}
-                          onMount={this.onTiersAdminReady}
-                        />
-                      </Container>
-                    )}
-                  </React.Fragment>
-                </HorizontalScroller>
-              </Box>
+              <Fragment>
+                <ContainerSectionContent>
+                  <SectionTitle>
+                    <FormattedMessage
+                      id="CollectivePage.SectionFinancialContributions.title"
+                      defaultMessage="Financial Contributions"
+                    />
+                  </SectionTitle>
+                </ContainerSectionContent>
+                <Box pb={4} data-cy="financial-contributions">
+                  <HorizontalScroller
+                    getScrollDistance={this.getContributeCardsScrollDistance}
+                    container={ContributeCardsContainer}
+                    containerProps={{ disableScrollSnapping: Boolean(draggingContributionsOrder) }}
+                  >
+                    <React.Fragment>
+                      {isSaving && (
+                        <ContainerOverlay position="fixed" top={0} alignItems="center">
+                          <StyledSpinner size={64} />
+                          <P mt={3} fontSize="15px">
+                            <FormattedMessage id="Saving" defaultMessage="Saving..." />
+                          </P>
+                        </ContainerOverlay>
+                      )}
+                      {!(isAdmin && showTiersAdmin) &&
+                        waysToContribute.map(({ key, Component, componentProps }) => (
+                          <ContributeCardContainer key={key}>
+                            <Component {...componentProps} />
+                          </ContributeCardContainer>
+                        ))}
+                      {isAdmin && (
+                        <Container display={showTiersAdmin ? 'block' : 'none'} data-cy="admin-contribute-cards">
+                          <AdminContributeCardsContainer
+                            collective={collective}
+                            cards={waysToContribute}
+                            onContributionCardMove={this.onContributionCardMove}
+                            onContributionCardDrop={this.onContributionCardDrop}
+                            onMount={this.onTiersAdminReady}
+                          />
+                        </Container>
+                      )}
+                    </React.Fragment>
+                  </HorizontalScroller>
+                </Box>
+              </Fragment>
             )}
 
             {/* Tickets for type EVENT */}
