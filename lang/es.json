@@ -380,6 +380,7 @@
   "CollectivePage.SectionEvents.AdminDescription": "Crea eventos para tu comunidad y vende boletos que van directamente a tu presupuesto.",
   "CollectivePage.SectionEvents.Description": "{collectiveName} is hosting the following events.",
   "CollectivePage.SectionEvents.ViewAll": "Ver todos los eventos",
+  "CollectivePage.SectionFinancialContributions.title": "Financial Contributions",
   "CollectivePage.SectionProjects.AdminDescription": "Manage finances for a project or initiative separate from your collective budget.",
   "CollectivePage.SectionProjects.Description": "Support the following initiatives from {collectiveName}.",
   "CollectivePage.SectionProjects.Title": "Proyectos",

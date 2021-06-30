@@ -380,6 +380,7 @@
   "CollectivePage.SectionEvents.AdminDescription": "Set up events for your community and sell tickets that go straight to your budget.",
   "CollectivePage.SectionEvents.Description": "{collectiveName} is hosting the following events.",
   "CollectivePage.SectionEvents.ViewAll": "すべてのイベントを表示",
+  "CollectivePage.SectionFinancialContributions.title": "Financial Contributions",
   "CollectivePage.SectionProjects.AdminDescription": "Manage finances for a project or initiative separate from your collective budget.",
   "CollectivePage.SectionProjects.Description": "Support the following initiatives from {collectiveName}.",
   "CollectivePage.SectionProjects.Title": "プロジェクト",
