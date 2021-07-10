@@ -637,7 +637,7 @@
   "CreateOrder.TitleForEvent": "Solicitar billetes para {event}",
   "createOrg.form.error.slug.hyphen": "La URL del slug de la organización no puede empezar con un guión (-)",
   "createOrg.form.error.website": "Introduce un sitio web válido; ej: www.example.com o example.org",
-  "createOrg.form.webstiteLabel": "Sitio web de la organización",
+  "createOrg.form.websiteLabel": "Sitio web de la organización",
   "createorganization.authorization.label": "Verifico que estoy autorizado para representar a esta organización.",
   "createPledge.collectiveDetails": "Detalles del nuevo colectivo:",
   "createPledge.conditions": "En este momento solo puedes comprometerte con proyectos de código abierto con un repositorio u organización de GitHub. ¡Solicitamos que el proyecto tenga al menos 100 estrellas en GitHub!",

@@ -46,7 +46,7 @@ const msg = defineMessages({
     defaultMessage: 'Set your URL',
   },
   orgWebsiteLabel: {
-    id: 'createOrg.form.webstiteLabel',
+    id: 'createOrg.form.websiteLabel',
     defaultMessage: 'Organization website',
   },
   orgDescriptionLabel: {

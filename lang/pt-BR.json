@@ -637,7 +637,7 @@
   "CreateOrder.TitleForEvent": "Pedir tickets para {event}",
   "createOrg.form.error.slug.hyphen": "URL slug da organização não pode começar ou terminar com um hífen (-)",
   "createOrg.form.error.website": "Insira um site válido, por exemplo, www.example.com ou example.org",
-  "createOrg.form.webstiteLabel": "Site da organização",
+  "createOrg.form.websiteLabel": "Organization website",
   "createorganization.authorization.label": "Eu verifico que estou autorizado a representar esta organização.",
   "createPledge.collectiveDetails": "Detalhes do novo coletivo:",
   "createPledge.conditions": "No momento, você só pode prometer para projetos de Código Aberto com um repositório ou organização do GitHub. Nós solicitamos que o projeto tenha pelo menos 100 estrelas no GitHub!",

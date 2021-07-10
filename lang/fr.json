@@ -637,7 +637,7 @@
   "CreateOrder.TitleForEvent": "Commander des tickets pour {event}",
   "createOrg.form.error.slug.hyphen": "Organization URL slug cannot start or end with a hyphen (-)",
   "createOrg.form.error.website": "Enter a valid website, e.g. www.example.com or example.org",
-  "createOrg.form.webstiteLabel": "Organization website",
+  "createOrg.form.websiteLabel": "Organization website",
   "createorganization.authorization.label": "I verify that I am authorized to represent this organization.",
   "createPledge.collectiveDetails": "Détails du nouveau collectif :",
   "createPledge.conditions": "At the moment, you can only pledge for Open Source projects with a GitHub repository or organization. We request the project to have a least 100 stars on GitHub!",

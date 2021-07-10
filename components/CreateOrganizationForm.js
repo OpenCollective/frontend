@@ -29,7 +29,7 @@ const orgMessages = defineMessages({
     id: 'create.collective.placeholder',
     defaultMessage: 'Making the world a better place',
   },
-  websiteLabel: { id: 'createOrg.form.webstiteLabel', defaultMessage: 'Organization website' },
+  websiteLabel: { id: 'createOrg.form.websiteLabel', defaultMessage: 'Organization website' },
   suggestedLabel: { id: 'createCollective.form.suggestedLabel', defaultMessage: 'Suggested' },
   descriptionLabel: {
     id: 'ExpenseForm.inviteeOrgDescriptionLabel',
