@@ -140,6 +140,7 @@ class EditUpdateForm extends React.Component {
               editorMaxHeight={600}
               withBorders
               data-cy="update-content-editor"
+              videoEmbedEnabled
             />
           </Container>
           {(!collective.isHost || update.isPrivate) && !this.props.isChangelog && (
