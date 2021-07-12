@@ -138,32 +138,41 @@ describe('Contribution Flow: Donate', () => {
     });
   });
 
-  it('works with 3D secure', () => {
-    cy.signup({ redirect: `${donateRoute}/42/year`, visitParams, user: { name: 'John Doe' } });
-    cy.get('button[data-cy="cf-next-step"]').click();
-    cy.get('button[data-cy="cf-next-step"]').click();
-    cy.checkStepsProgress({ enabled: ['details', 'profile', 'payment'] });
-    cy.wait(3000); // Wait for stripe to be loaded
-    cy.fillStripeInput({ card: CreditCards.CARD_3D_SECURE });
-    cy.contains('button', 'Contribute $42').click();
-    cy.wait(8000); // Wait for order to be submitted and popup to appear
+  it(
+    'works with 3D secure',
+    {
+      retries: {
+        runMode: 2,
+        openMode: 1,
+      },
+    },
+    () => {
+      cy.signup({ redirect: `${donateRoute}/42/year`, visitParams, user: { name: 'John Doe' } });
+      cy.get('button[data-cy="cf-next-step"]').click();
+      cy.get('button[data-cy="cf-next-step"]').click();
+      cy.checkStepsProgress({ enabled: ['details', 'profile', 'payment'] });
+      cy.wait(3000); // Wait for stripe to be loaded
+      cy.fillStripeInput({ card: CreditCards.CARD_3D_SECURE });
+      cy.contains('button', 'Contribute $42').click();
+      cy.wait(8000); // Wait for order to be submitted and popup to appear
 
-    // Rejecting the validation should produce an error
-    cy.complete3dSecure(false);
-    cy.contains('We are unable to authenticate your payment method.');
+      // Rejecting the validation should produce an error
+      cy.complete3dSecure(false);
+      cy.contains('We are unable to authenticate your payment method.');
 
-    // Refill stripe input to avoid using the same token twice
-    cy.fillStripeInput({ card: CreditCards.CARD_3D_SECURE });
+      // Refill stripe input to avoid using the same token twice
+      cy.fillStripeInput({ card: CreditCards.CARD_3D_SECURE });
 
-    // Re-trigger the popup
-    cy.contains('button', 'Contribute $42').click();
+      // Re-trigger the popup
+      cy.contains('button', 'Contribute $42').click();
 
-    // Approving the validation should create the order
-    cy.wait(8000); // Wait for order to be submitted and popup to appear
-    cy.complete3dSecure(true);
-    cy.getByDataCy('order-success', { timeout: 20000 });
-    cy.contains('You are now supporting APEX.');
-  });
+      // Approving the validation should create the order
+      cy.wait(8000); // Wait for order to be submitted and popup to appear
+      cy.complete3dSecure(true);
+      cy.getByDataCy('order-success', { timeout: 20000 });
+      cy.contains('You are now supporting APEX.');
+    },
+  );
 
   it('Shows Stripe errors in the frontend', () => {
     cy.visit(donateRoute);
