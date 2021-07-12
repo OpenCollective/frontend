@@ -288,10 +288,11 @@ export default class RichTextEditor extends React.Component {
   };
 
   /** ---- Trix handlers ---- */
-  replaceEmbeddedIFrames = value => {
+  replaceEmbeddedIFrames = async value => {
     const iframeRegex = new RegExp(`<iframe.+?iframe>`, 'ig');
     let match;
     let lastIndex = 0;
+    let index = 0;
 
     while ((match = iframeRegex.exec(value))) {
       if (lastIndex === 0) {
@@ -301,12 +302,34 @@ export default class RichTextEditor extends React.Component {
       const position = match.index;
       const preText = value.substring(lastIndex, position);
       this.getEditor().setSelectedRange([lastIndex, position]);
-      this.getEditor().insertHTML(preText);
-      const attachment = new this.Trix.Attachment({ content: iframe });
+      this.getEditor().insertHTML(preText.trim());
+      const { videoService, videoId } = this.getEmbedDetails(iframe);
+      const attachment = new this.Trix.Attachment({
+        content: `<img alt="Preview Image" src="${await this.constructPreviewImageURL(videoService, videoId)}"/>`,
+      });
       this.getEditor().insertAttachment(attachment);
       lastIndex = match.index + iframe.length;
       const postText = value.substring(lastIndex, value.length);
-      this.getEditor().insertHTML(postText);
+      if (index > 0) {
+        this.getEditor().insertHTML(postText.trim());
+      }
+      index++;
+    }
+  };
+
+  getEmbedDetails = iframe => {
+    const regex = new RegExp(
+      `(https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?`,
+      'ig',
+    );
+    const match = regex.exec(iframe);
+    if (match[0].includes('youtube')) {
+      const { id } = this.parseServiceLink(match[0]);
+      return { videoService: 'youtube', videoId: id };
+      // } else if (match[0].includes('vimeo')) {
+      //   const matchIdRegex = new RegExp(`video\\/(.+?)(\\/|$)`, 'ig');
+      //   const videoId = matchIdRegex.exec(match[0])[1];
+      //   return { videoService: 'vimeo', videoId };
     }
   };
 
@@ -343,7 +366,7 @@ export default class RichTextEditor extends React.Component {
     } else if (e.actionName === 'x-add-embed') {
       const embedLink = toolbarElement.querySelector('.trix-input--dialog-embed').value?.trim();
       if (embedLink) {
-        this.embedIframe(embedLink);
+        this.embedIframePreview(embedLink);
       }
     }
   };
@@ -360,10 +383,22 @@ export default class RichTextEditor extends React.Component {
     }
   };
 
+  constructPreviewImageURL = (service, id) => {
+    if (service === 'youtube') {
+      return `https://img.youtube.com/vi/${id}/0.jpg`;
+      // } else if (service === 'vimeo') {
+      //   const videoDetailsObj = await fetch(`https://vimeo.com/api/v2/video/${id}.json`);
+      //   const videoDetails = await videoDetailsObj.json();
+      //   return videoDetails[0].thumbnail_large;
+    } else {
+      return null;
+    }
+  };
+
   parseServiceLink = videoLink => {
     const regexps = {
       youtube: new RegExp(
-        '(?:https?://)?(?:www\\.)?youtu(?:\\.be/|be\\.com/\\S*(?:watch|embed)(?:(?:(?=/[^&\\s?]+(?!\\S))/)|(?:\\S*v=|v/)))([^&\\s?]+)',
+        '(?:https?://)?(?:www\\.)?youtu(?:\\.be/|be(-nocookie)?\\.com/\\S*(?:watch|embed)(?:(?:(?=/[^&\\s?]+(?!\\S))/)|(?:\\S*v=|v/)))([^&\\s?]+)',
         'i',
       ),
       vimeo: new RegExp(
@@ -387,13 +422,14 @@ export default class RichTextEditor extends React.Component {
     return {};
   };
 
-  embedIframe = videoLink => {
+  embedIframe = async videoLink => {
     const { id, service } = this.parseServiceLink(videoLink);
-    const embedLink = this.constructVideoEmbedURL(service, id);
+    const embedLink = await this.constructVideoEmbedURL(service, id);
     if (embedLink) {
-      const sanitizedLink = embedLink.replace(/["\\]/g, ''); // Small security enhancement, prevents going out of `src`
       const videoServices = ['youtube', 'vimeo'];
       let attachmentData;
+      const sanitizedLink = embedLink.replace(/["\\]/g, ''); // Small security enhancement, prevents going out of `src`
+
       if (videoServices.includes(service)) {
         attachmentData = {
           contentType: '--embed-iframe-video',
@@ -403,6 +439,29 @@ export default class RichTextEditor extends React.Component {
         attachmentData = {
           contentType: `--embed-iframe-${service}`,
           content: `<iframe src="${sanitizedLink}" width="100%" frameborder="0"/>`,
+        };
+      }
+
+      this.getEditor().insertAttachment(new this.Trix.Attachment(attachmentData));
+    }
+  };
+
+  embedIframePreview = async videoLink => {
+    const { id, service } = this.parseServiceLink(videoLink);
+    const previewLink = await this.constructPreviewImageURL(service, id);
+    if (previewLink) {
+      const videoServices = ['youtube', 'vimeo'];
+      let attachmentData;
+
+      if (videoServices.includes(service)) {
+        attachmentData = {
+          contentType: '--embed-iframe-video-preview',
+          content: `<img alt="Preview Image" src="${previewLink}" width="100%" height="394" />`,
+        };
+      } else {
+        attachmentData = {
+          contentType: `--embed-iframe-${service}-preview`,
+          content: `<img alt="Preview Image" src="${previewLink}" width="100%" />`,
         };
       }
 

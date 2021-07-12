@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 
 import { CollectiveType } from '../../../lib/constants/collectives';
+import replaceImgPreviews from '../../../lib/rich-text';
 
 import Container from '../../Container';
 import { Flex } from '../../Grid';
@@ -52,7 +53,7 @@ const SectionAbout = ({ collective, canEdit, intl }) => {
           formatBeforeSubmit={v => (isEmptyValue(v) ? null : v)}
           prepareVariables={(collective, longDescription) => ({
             id: collective.id,
-            longDescription: isEmptyValue(longDescription) ? null : longDescription,
+            longDescription: isEmptyValue(longDescription) ? null : replaceImgPreviews(longDescription),
           })}
         >
           {({ isEditing, value, setValue, enableEditor }) => {

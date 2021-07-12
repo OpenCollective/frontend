@@ -236,14 +236,13 @@ class InlineEditField extends Component {
                       data-cy="InlineEditField-Btn-Save"
                       minWidth={buttonsMinWidth}
                       onClick={() => {
-                        let variables = null;
+                        let variables;
                         if (prepareVariables) {
                           variables = prepareVariables(values, draft);
                         } else {
                           variables = pick(values, ['id']);
                           variables[field] = draft;
                         }
-
                         updateField({ variables }).then(() => this.disableEditor(true));
                       }}
                     >
