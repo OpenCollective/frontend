@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FastField, Field } from 'formik';
 import { first, get, isEmpty, omit, partition, pick } from 'lodash';
@@ -140,6 +140,12 @@ const ExpenseFormPayeeStep = ({
     types: [CollectiveType.ORGANIZATION],
     __background__: 'white',
   });
+
+  useEffect(() => {
+    setLocationFromPayee(formik, collective.host);
+
+    return () => setLocationFromPayee(formik, collective.host);
+  }, []);
 
   const collectivePick = canInvite
     ? ({ id }) => (
