@@ -11,6 +11,7 @@ const defaults = {
   NODE_ENV: 'development',
   API_KEY: '09u624Pc9F47zoGLlkg1TBSbOl2ydSAq',
   API_URL: 'https://api-staging.opencollective.com',
+  REST_URL: 'https://rest-staging.opencollective.com',
   IMAGES_URL: 'https://images-staging.opencollective.com',
   WEBSITE_URL: 'http://localhost:3000',
   PDF_SERVICE_URL: 'https://invoices-staging.opencollective.com',

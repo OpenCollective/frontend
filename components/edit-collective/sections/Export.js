@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
-import { exportMembers } from '../../../lib/export_file';
+import { CollectiveType } from '../../../lib/constants/collectives';
+import { getEnvVar } from '../../../lib/env-utils';
+import { exportHosts, exportMembers } from '../../../lib/export_file';
 
 import Container from '../../Container';
 import ExportImages from '../../ExportImages';
@@ -23,12 +25,19 @@ class Export extends React.Component {
     super(props);
   }
 
-  render() {
-    const { collective } = this.props;
-    const widgetCode = `<script src="https://opencollective.com/${collective.slug}/banner.js"></script>`;
-
+  renderStyledLink(path) {
+    const restURL = getEnvVar('REST_URL');
+    const URL = `${restURL}${path}`;
     return (
-      <div>
+      <StyledLink display="block" href={URL}>
+        {URL}
+      </StyledLink>
+    );
+  }
+
+  renderCollectivesExport(collective, widgetCode) {
+    return (
+      <Fragment>
         <SettingsTitle mb={4}>
           <FormattedMessage id="editCollective.menu.export" defaultMessage="Export" />
         </SettingsTitle>
@@ -70,45 +79,21 @@ class Export extends React.Component {
             <FormattedMessage
               id="ExportContributors.All"
               defaultMessage="All contributors: {link}"
-              values={{
-                link: (
-                  <StyledLink href={`/${collective.slug}/members/all.json`}>
-                    https://opencollective.com/
-                    {collective.slug}
-                    /members/all.json
-                  </StyledLink>
-                ),
-              }}
+              values={{ link: this.renderStyledLink(`/${collective.slug}/members/all.json`) }}
             />
           </li>
           <li>
             <FormattedMessage
               id="ExportContributors.OnlyIndividuals"
               defaultMessage="Only individuals: {link}"
-              values={{
-                link: (
-                  <StyledLink href={`/${collective.slug}/members/users.json`}>
-                    https://opencollective.com/
-                    {collective.slug}
-                    /members/users.json
-                  </StyledLink>
-                ),
-              }}
+              values={{ link: this.renderStyledLink(`/${collective.slug}/members/users.json`) }}
             />
           </li>
           <li>
             <FormattedMessage
               id="ExportContributors.OnlyOrganizations"
               defaultMessage="Only organizations: {link}"
-              values={{
-                link: (
-                  <StyledLink href={`/${collective.slug}/members/organizations.json`}>
-                    https://opencollective.com/
-                    {collective.slug}
-                    /members/organizations.json
-                  </StyledLink>
-                ),
-              }}
+              values={{ link: this.renderStyledLink(`/${collective.slug}/members/organizations.json`) }}
             />
           </li>
         </ul>
@@ -149,26 +134,93 @@ class Export extends React.Component {
         {collective.tiers[0] && (
           <div>
             e.g.
-            <br />
-            <a href={`/${collective.slug}/members/all.json?limit=10&offset=0&TierId=${collective.tiers[0].id}`}>
-              https://opencollective.com/
-              {collective.slug}
-              /members/all.json?limit=10&offset=0&TierId=
-              {collective.tiers[0].id}
-            </a>
+            {this.renderStyledLink(
+              `/${collective.slug}/members/all.json?limit=10&offset=0&TierId=${collective.tiers[0].id}`,
+            )}
           </div>
         )}
         {!collective.tiers[0] && (
           <div>
             e.g.
-            <br />
-            <a href={`/${collective.slug}/members/all.json?limit=10&offset=0`}>
-              https://opencollective.com/
-              {collective.slug}
-              /members/all.json?limit=10&offset=0
-            </a>
+            {this.renderStyledLink(`/${collective.slug}/members/all.json?limit=10&offset=0`)}
           </div>
         )}
+      </Fragment>
+    );
+  }
+
+  renderHostExports(collective) {
+    return (
+      <Fragment>
+        <h1>
+          <FormattedMessage id="Export.Format" defaultMessage="Export {format}" values={{ format: 'CSV' }} />
+        </h1>
+        <P textAlign="center">
+          <FormattedMessage
+            id="ExportHostedCollectives.Description"
+            defaultMessage="Export your hosted collectives data in {format} format"
+            values={{ format: 'CSV' }}
+          />
+        </P>
+        <div className="actions">
+          <StyledButton onClick={async () => await exportHosts(collective.slug, 'csv')}>
+            <FormattedMessage id="Export.Format" defaultMessage="Export {format}" values={{ format: 'CSV' }} />
+          </StyledButton>
+        </div>
+
+        <hr />
+
+        <h1>
+          <FormattedMessage id="Export.Format" defaultMessage="Export {format}" values={{ format: 'JSON' }} />
+        </h1>
+        <P textAlign="center">
+          <FormattedMessage
+            id="ExportHostedCollectives.Description"
+            defaultMessage="Export your hosted collectives data in {format} format"
+            values={{ format: 'JSON' }}
+          />
+        </P>
+        <div className="actions">
+          <StyledButton onClick={async () => await exportHosts(collective.slug, 'json')}>
+            <FormattedMessage id="Export.Format" defaultMessage="Export {format}" values={{ format: 'JSON' }} />
+          </StyledButton>
+        </div>
+      </Fragment>
+    );
+  }
+
+  render() {
+    const { collective } = this.props;
+    const widgetCode = `<script src="https://opencollective.com/${collective.slug}/banner.js"></script>`;
+
+    return (
+      <div className="ExportData">
+        <style global jsx>
+          {`
+            table tr td {
+              vertical-align: top;
+            }
+            .param {
+              font-weight: bold;
+              padding-right: 0.5rem;
+              font-family: 'Courrier';
+            }
+            .actions {
+              text-align: center;
+            }
+            .code {
+              font-size: 1.4rem;
+              font-family: Courrier;
+              padding: 0.1rem 0.3rem;
+              background: #ddd;
+              margin: 0.5rem;
+              border: 1px solid #ccc;
+            }
+          `}
+        </style>
+        {collective.type === CollectiveType.COLLECTIVE
+          ? this.renderCollectivesExport(collective, widgetCode)
+          : this.renderHostExports(collective)}
       </div>
     );
   }

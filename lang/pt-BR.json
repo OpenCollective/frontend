@@ -955,6 +955,7 @@
   "ExportContributors.Description": "Exportar seus dados de colaborador no formato {format}",
   "ExportContributors.OnlyIndividuals": "Somente indivíduos: {link}",
   "ExportContributors.OnlyOrganizations": "Apenas organizações: {link}",
+  "ExportHostedCollectives.Description": "Export your hosted collectives data in {format} format",
   "ExportImages.AllFinancial": "Distintivo de todos os colaboradores financeiros",
   "ExportImages.Title": "Você pode exportar imagens mostrando os colaboradores financeiros para cada nível.",
   "externalRedirect.message": "Sua solicitação está sendo redirecionada para {redirect}. Para a segurança e a privacidade de sua conta Open Collective, lembre-se de nunca inserir suas credenciais a menos que você esteja no site real da Open Collective.",

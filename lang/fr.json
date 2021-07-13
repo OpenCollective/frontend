@@ -955,6 +955,7 @@
   "ExportContributors.Description": "Export your contributor data in {format} format",
   "ExportContributors.OnlyIndividuals": "Seulement les personnes : {link}",
   "ExportContributors.OnlyOrganizations": "Seulement les organisations : {link}",
+  "ExportHostedCollectives.Description": "Export your hosted collectives data in {format} format",
   "ExportImages.AllFinancial": "Tous les contributeurs financiers",
   "ExportImages.Title": "Vous pouvez exporter des images pour afficher les contributeurs financiers de chaque palier.",
   "externalRedirect.message": "Votre demande est actuellement en cours de redirection vers {redirect}. Pour la sécurité et la confidentialité de votre compte Open Collective, ne rentrez jamais vos informations d'identification en dehors d'Open Collective.",
