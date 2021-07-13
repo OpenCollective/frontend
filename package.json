@@ -55,7 +55,7 @@
     "express-http-proxy": "1.6.2",
     "express-limiter": "1.6.1",
     "express-winston": "4.1.0",
-    "express-ws": "4.0.0",
+    "express-ws": "5.0.2",
     "file-saver": "2.0.5",
     "focus-trap-react": "8.7.0",
     "formik": "2.2.9",
