@@ -77,7 +77,7 @@ jobs:
       # Npm cache
 
       - name: Restore .npm cache
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-cache-${{ github.sha }}
@@ -129,7 +129,7 @@ jobs:
       # Prepare API
 
       - name: Restore node_modules (api)
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: api-node-modules
         with:
           path: opencollective-api/node_modules
@@ -147,7 +147,7 @@ jobs:
       # Prepare Images
 
       - name: Restore node_modules (images)
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: images-node-modules
         with:
           path: opencollective-images/node_modules
@@ -165,7 +165,7 @@ jobs:
       # Prepare Frontend
 
       - name: Restore node_modules (frontend)
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: node-modules
         with:
           path: node_modules
@@ -176,7 +176,7 @@ jobs:
         run: CYPRESS_INSTALL_BINARY=0 npm ci --prefer-offline --no-audit
 
       - name: Restore Cypress
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: cypress
         with:
           path: ~/.cache/Cypress
@@ -187,7 +187,7 @@ jobs:
         run: npx cypress install
 
       - name: Restore .next build (frontend)
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: next-build
         with:
           path: .next
@@ -195,7 +195,7 @@ jobs:
 
       - name: Restore .next cache (frontend)
         if: steps.next-build.outputs.cache-hit != 'true'
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: .next/cache
           key: ${{ runner.os }}-next-cache-${{ github.sha }}
