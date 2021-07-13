@@ -42,8 +42,10 @@ describe('edit collective', () => {
 
     // Add a new member by creating it inline with the collective picker
     cy.getByDataCy('menu-item-members').click();
-    cy.getByDataCy('add-member-btn').click();
-    cy.get('[data-cy="member-1"] [data-cy="member-collective-picker"]').click();
+    cy.wait(200);
+    cy.getByDataCy('invite-member-btn').click();
+    cy.wait(200);
+    cy.getByDataCy('member-collective-picker').click();
     cy.getByDataCy('collective-type-picker-USER').click();
     cy.getByDataCy('create-collective-mini-form').then($form => {
       cy.wrap($form).find('input[name="email"]').type(invitedUserEmail);
@@ -52,7 +54,7 @@ describe('edit collective', () => {
     });
     cy.wait(200);
     cy.getByDataCy('create-collective-mini-form').should('not.exist'); // Wait for form to be submitted
-    cy.getByDataCy('save-members-btn').click();
+    cy.getByDataCy('confirmation-modal-continue').click();
     cy.get('[data-cy="member-1"] [data-cy="member-pending-tag"]').should('exist');
 
     // Check invitation email

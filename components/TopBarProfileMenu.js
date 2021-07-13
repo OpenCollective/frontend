@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { gql } from '@apollo/client';
 import { Query } from '@apollo/client/react/components';
 import { ChevronDown } from '@styled-icons/boxicons-regular/ChevronDown';
 import { get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { createGlobalStyle } from 'styled-components';
 
+import { API_V2_CONTEXT, gqlV2 } from '../lib/graphql/helpers';
 import { getFromLocalStorage, LOCAL_STORAGE_KEYS } from '../lib/local-storage';
 import { parseToBoolean } from '../lib/utils';
 
@@ -26,9 +26,9 @@ import { withUser } from './UserProvider';
 
 const CHANGE_LOG_UPDATES_ENABLED = parseToBoolean(process.env.CHANGE_LOG_UPDATES_ENABLED);
 
-const memberInvitationsCountQuery = gql`
-  query MemberInvitationsCount($memberCollectiveId: Int!) {
-    memberInvitations(MemberCollectiveId: $memberCollectiveId) {
+const memberInvitationsCountQuery = gqlV2`
+  query MemberInvitationsCount($memberAccount: AccountReferenceInput!) {
+    memberInvitations(memberAccount: $memberAccount) {
       id
     }
   }
@@ -144,8 +144,9 @@ class TopBarProfileMenu extends React.Component {
               </UserMenuLinkEntry>
               <Query
                 query={memberInvitationsCountQuery}
-                variables={{ memberCollectiveId: LoggedInUser.CollectiveId }}
+                variables={{ memberAccount: { slug: LoggedInUser.collective.slug } }}
                 fetchPolicy="network-only"
+                context={API_V2_CONTEXT}
               >
                 {({ data, loading }) =>
                   loading === false && data && data.memberInvitations && data.memberInvitations.length > 0 ? (

@@ -1980,6 +1980,7 @@ type Mutation {
   Updates all the core contributors (role = ADMIN or MEMBER) for this collective.
   """
   editCoreContributors(collectiveId: Int!, members: [MemberInputType!]!): CollectiveInterface
+    @deprecated(reason: "2021-07-02: Please use inviteMember, editMember or removeMember mutations from GQLV2")
 
   """
   A mutation to edit the public message of all matching members.
@@ -2149,7 +2150,7 @@ type Mutation {
     Whether this invitation should be accepted or declined
     """
     accept: Boolean!
-  ): Boolean
+  ): Boolean @deprecated(reason: "2021-07-07: This endpoint has been moved to GQLV2")
   backyourstackDispatchOrder(id: Int!): BackYourStackDispatchState
 
   """

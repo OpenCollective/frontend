@@ -5277,6 +5277,32 @@ type MemberCollection implements Collection {
 }
 
 """
+An invitation to join the members of a collective
+"""
+type MemberInvitation {
+  id: String!
+  createdAt: DateTime!
+  account: Account!
+  memberAccount: Account!
+  role: MemberRole!
+  description: String
+  tier: Tier
+  since: DateTime
+}
+
+input MemberInvitationReferenceInput {
+  """
+  The public id identifying the member invitation (ie: dgm9bnk8-0437xqry-ejpvzeol-jdayw5re)
+  """
+  id: String
+
+  """
+  The internal id of the invitation (ie: 580)
+  """
+  legacyId: Int
+}
+
+"""
 This represents a MemberOf relationship (ie: Collective backed by an Organization)
 """
 type MemberOf {
@@ -5965,6 +5991,108 @@ type Mutation {
     """
     message: String
   ): Member!
+
+  """
+  Edit an existing member of the Collective
+  """
+  editMember(
+    """
+    Reference to an account for the member to edit.
+    """
+    memberAccount: AccountReferenceInput!
+
+    """
+    Reference to an account for the Collective
+    """
+    account: AccountReferenceInput!
+
+    """
+    Role of member
+    """
+    role: MemberRole
+    description: String
+    since: DateTime
+  ): Member
+
+  """
+  Remove a member from the Collective
+  """
+  removeMember(
+    """
+    Reference to an account of member to remove
+    """
+    memberAccount: AccountReferenceInput!
+
+    """
+    Reference to the Collective account
+    """
+    account: AccountReferenceInput!
+
+    """
+    Role of member
+    """
+    role: MemberRole!
+    isInvitation: Boolean
+  ): Boolean
+
+  """
+  Invite a new member to the Collective
+  """
+  inviteMember(
+    """
+    Reference to an account for the invitee
+    """
+    memberAccount: AccountReferenceInput!
+
+    """
+    Reference to an account for the inviting Collective
+    """
+    account: AccountReferenceInput!
+
+    """
+    Role of the invitee
+    """
+    role: MemberRole!
+    description: String
+    since: DateTime
+  ): MemberInvitation!
+
+  """
+  Edit an existing member invitation of the Collective
+  """
+  editMemberInvitation(
+    """
+    Reference to an account for the member to edit.
+    """
+    memberAccount: AccountReferenceInput!
+
+    """
+    Reference to an account for the Collective
+    """
+    account: AccountReferenceInput!
+
+    """
+    Role of member
+    """
+    role: MemberRole
+    description: String
+    since: DateTime
+  ): MemberInvitation
+
+  """
+  Endpoint to accept or reject an invitation to become a member
+  """
+  replyToMemberInvitation(
+    """
+    Reference to the invitation
+    """
+    invitation: MemberInvitationReferenceInput!
+
+    """
+    Whether this invitation should be accepted or declined
+    """
+    accept: Boolean!
+  ): Boolean!
   createUpdate(update: UpdateCreateInput!): Update!
   editUpdate(update: UpdateUpdateInput!): Update!
   publishUpdate(id: String!, notificationAudience: UpdateAudience): Update!
@@ -7375,6 +7503,21 @@ type Query {
     """
     tags: [String]
   ): HostCollection
+
+  """
+  [AUTHENTICATED] Returns the pending invitations
+  """
+  memberInvitations(
+    """
+    Reference to an account of member to remove
+    """
+    memberAccount: AccountReferenceInput
+
+    """
+    Reference to the Collective account
+    """
+    account: AccountReferenceInput
+  ): [MemberInvitation]
   order(
     """
     Identifiers to retrieve the Order

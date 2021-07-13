@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 
 import roles from '../lib/constants/roles';
 import { getErrorFromGraphqlException } from '../lib/errors';
+import { API_V2_CONTEXT, gqlV2 } from '../lib/graphql/helpers';
 import formatMemberRole from '../lib/i18n/member-role';
 
 import Avatar from './Avatar';
@@ -42,9 +43,9 @@ const messages = defineMessages({
   },
 });
 
-const replyToMemberInvitationMutation = gql`
-  mutation ReplyToMemberInvitation($id: Int!, $accept: Boolean!) {
-    replyToMemberInvitation(invitationId: $id, accept: $accept)
+const replyToMemberInvitationMutation = gqlV2`
+  mutation ReplyToMemberInvitation($invitation: MemberInvitationReferenceInput!, $accept: Boolean!) {
+    replyToMemberInvitation(invitation: $invitation, accept: $accept)
   }
 `;
 
@@ -58,17 +59,19 @@ const ReplyToMemberInvitationCard = ({ invitation, isSelected, refetchLoggedInUs
   const router = useRouter();
   const [accepted, setAccepted] = React.useState();
   const [isSubmitting, setSubmitting] = React.useState(false);
-  const [sendReplyToInvitation, { error, data }] = useMutation(replyToMemberInvitationMutation);
+  const [sendReplyToInvitation, { error, data }] = useMutation(replyToMemberInvitationMutation, {
+    context: API_V2_CONTEXT,
+  });
   const isDisabled = isSubmitting;
   const hasReplied = data && typeof data.replyToMemberInvitation !== 'undefined';
 
   const buildReplyToInvitation = accept => async () => {
     setSubmitting(true);
     setAccepted(accept);
-    await sendReplyToInvitation({ variables: { id: invitation.id, accept } });
+    await sendReplyToInvitation({ variables: { invitation: { id: invitation.id }, accept } });
     await refetchLoggedInUser();
     if (accept && redirectOnAccept) {
-      await router.push(`/${invitation.collective.slug}`);
+      await router.push(`/${invitation.account.slug}`);
     }
     setSubmitting(false);
   };
@@ -82,10 +85,10 @@ const ReplyToMemberInvitationCard = ({ invitation, isSelected, refetchLoggedInUs
       borderColor={isSelected ? 'primary.300' : undefined}
       data-cy="member-invitation-card"
     >
-      <LinkCollective collective={invitation.collective}>
+      <LinkCollective collective={invitation.account}>
         <Flex flexDirection="column" alignItems="center">
-          <Avatar collective={invitation.collective} />
-          <H3>{invitation.collective.name}</H3>
+          <Avatar collective={invitation.account} />
+          <H3>{invitation.account.name}</H3>
         </Flex>
       </LinkCollective>
       <hr />
@@ -141,9 +144,9 @@ const ReplyToMemberInvitationCard = ({ invitation, isSelected, refetchLoggedInUs
 ReplyToMemberInvitationCard.propTypes = {
   isSelected: PropTypes.bool,
   invitation: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     role: PropTypes.oneOf(Object.values(roles)),
-    collective: PropTypes.shape({
+    account: PropTypes.shape({
       name: PropTypes.string,
       slug: PropTypes.string,
     }),
